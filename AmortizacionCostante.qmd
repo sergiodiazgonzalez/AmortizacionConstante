@@ -1,0 +1,187 @@
+---
+title: "**Tablas de Amortización Constante**"
+author: "Angel Sinai Reyes Ferreyra <br>
+         Yoselin Castañeda Ayllon <br>
+         Guadalupe Montserrat Ramirez Mendoza <br>
+         Sergio Díaz González <br>
+         Juann Andrés Pérez Raya <br><br>
+**Universidad**: UMSNH"
+format: 
+  revealjs:
+    theme: sky  #black, white, league, beige, sky, serif, blood, moon
+    font-family: "Georgia, serif" #Georgia, serif -Times New Roman, Times, serif -Palatino Linotype, Book Antiqua, Palatino, serif -Arial, Helvetica, sans-serif -Verdana, Geneva, sans-serif -Trebuchet MS, sans-serif -Tahoma, Geneva, sans-serif
+    slide-number: true
+    font-scale: 1.5
+    transition: slide
+    smooth_scroll: true
+    mathjax: true
+    scrollable: true
+---
+
+## Introducción
+
+ El método de amortización constante se basa en el saldo insoluto para el cobro de intereses.
+ 
+ Insoluto significa no pagado; por lo tanto, hablamos de un método de amortización que recibe el nombre de amortización con intereses sobre saldos insolutos ya que los intereses se cobran sobre el saldo que queda por pagar cada vez que se realiza un abono.
+
+
+## Amortización Constante
+
+- El método de amortización constante consiste en pagar una deuda en la que la cantidad que se reduce del capital es siempre la misma (constante) y se calcula dividiendo el capital original sobre el número de periodos de pago:
+A=C/n
+
+## Método
+
+En el método de amortización constante los abonos que se realizan son decrecientes porque los intereses se calculan sobre el saldo insoluto, el cual va disminuyendo con cada amortización.
+Existen dos formas de solucionar este método de amortización: mediante tablas de amortización y mediante una fórmula en la que los intereses forman una sucesión aritmética.
+
+## **Amortización constante para actuarios**
+Un actuario utiliza tablas de amortización constante porque son herramientas fundamentales para evaluar y planificar la gestión financiera de pasivos y activos, particularmente en áreas como préstamos, seguros, pensiones y finanzas corporativas. Estas tablas desglosan cómo se distribuyen los pagos a lo largo del tiempo, lo que es esencial para tomar decisiones informadas sobre riesgos y estrategias de inversión.
+
+## **Usos principales para un actuario:**
+
+-	Gestión de préstamos y obligaciones financieras
+	
+-	Cálculo del valor presente y flujos de efectivo
+	
+-	Modelado de riesgos
+	
+-	Proyección de reservas técnicas
+	
+-	Planeación de estrategias de inversión
+
+## **Ejemplo**:
+En un crédito hipotecario de amortización constante, el actuario utiliza la tabla para determinar:
+	-	Cuánto se destina al pago de intereses y cuánto al capital en cada periodo.
+	-	Cómo se reduce el saldo pendiente del crédito con el tiempo.
+	-	El costo total del financiamiento.
+
+### **Beneficios:**
+
+  -Transparencia, precisión y planeación
+
+## Fórmulas Básicas
+
+1. *Valor Futuro (VF):*  
+   $$ VF = VA \cdot [1 + (r \cdot t)] $$  
+
+2. *Amortización (A):*  
+   $$ a = \frac{P}{n} $$  
+
+3. *Intereses (I):*  
+   $$ I = \frac{ni}{2}[2P-a(n-1)] $$   
+
+## Ejemplo Práctico
+
+Datos del problema:
+
+El monto del préstamo es $12,000.
+La tasa de interés mensual es 3%.
+El plazo del préstamo es de 6 meses.
+El pago constante es de $2,000 por mes.
+
+```{r}
+# Parámetros
+P = 12000    # Monto del préstamo
+i = 0.03     # Tasa de interés mensual (3%)
+n = 6        # Número de meses
+a = 2000     # Pago constante
+
+# Inicialización de variables
+saldo = P
+tabla = data.frame(
+  Periodo = numeric(),
+  Pago = numeric(),
+  Intereses = numeric(),
+  Amortizacion = numeric(),
+  Saldo = numeric()
+)
+
+# Calcular la tabla de amortización
+for (t in 1:n) {
+  intereses = saldo * i  # Calcular los intereses
+  amortizacion = a - intereses  # Amortización del capital
+  saldo = saldo - amortizacion  # Calcular el saldo restante
+  tabla = rbind(tabla, data.frame(
+    Periodo = t,
+    Pago = a,
+    Intereses = intereses,
+    Amortizacion = amortizacion,
+    Saldo = floor(saldo)  # Ajustar el saldo a un valor entero
+  ))
+}
+
+# Mostrar la tabla de amortización
+knitr::kable(tabla, align = "c")
+```
+
+```{r}
+library(ggplot2)
+
+# Graficar el saldo de la deuda a lo largo del tiempo
+ggplot(tabla, aes(x = Periodo, y = Saldo)) +
+  geom_line(color = "blue") +
+  ggtitle("Saldo pendiente a lo largo del tiempo (Ejemplo 8.2)") +
+  xlab("Periodo (Meses)") + 
+  ylab("Saldo ($)")
+```
+
+
+## Ejemplo Práctico
+
+-   Préstamo: \$18,000
+-   Tasa: 24% anual
+-   Plazo: 9 meses
+
+```{r}
+# Parámetros
+P = 18000    # Monto del préstamo
+i = 0.02     # Tasa de interés mensual (24% anual)
+n = 9        # Número de meses
+a = P / n    # Pago constante
+# Inicialización de variables
+saldo = P
+tabla = data.frame(
+  Periodo = numeric(),
+  Pago = numeric(),
+  Intereses = numeric(),
+  Amortizacion = numeric(),
+  Saldo = numeric()
+)
+# Calcular la tabla de amortización
+for (t in 1:n) {
+  intereses = saldo * i  # Calcular los intereses
+  amortizacion = a - intereses  # Amortización del capital
+  saldo = saldo - amortizacion  # Calcular el saldo restante
+  tabla = rbind(tabla, data.frame(
+    Periodo = t,
+    Pago = a,
+    Intereses = intereses,
+    Amortizacion = amortizacion,
+    Saldo = floor(saldo)  # Ajustar el saldo a un valor entero
+  ))
+}
+# Mostrar la tabla de amortización
+knitr::kable(tabla, align = "c")
+```
+
+```{r}
+library(ggplot2)
+# Graficar el saldo de la deuda a lo largo del tiempo
+ggplot(tabla, aes(x = Periodo, y = Saldo)) +
+  geom_line(color = "blue") +
+  ggtitle("Saldo pendiente a lo largo del tiempo (Crédito de $18,000 a 9 meses)") +
+  xlab("Periodo (Meses)") + 
+  ylab("Saldo ($)")
+```
+
+para saber si nuestra tabla de amortización está bien diseñada, debemos asegurarnos de que la suma de los abonos de capital sea igual a valor del préstamo y el saldo del capital en la última cuota sea cero.
+
+## Ventajas de la Amortización Constante
+
+- Los pagos iniciales son más altos, lo que reduce rápidamente el saldo insoluto.
+- A largo plazo, el costo total por intereses es menor que otros métodos.
+
+## **Conclusión**
+
+Contar con una tabla de amortización permite a los prestatarios planificar y controlar mejor sus pagos, además de entender la estructura de costos del préstamo. Es una herramienta indispensable para la gestión responsable de las finanzas personales y empresariales que involucren financiamiento.
